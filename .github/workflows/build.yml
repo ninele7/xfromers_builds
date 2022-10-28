@@ -18,7 +18,6 @@ jobs:
         id: python
         with:
           python-version: '3.10' 
-      - run: pip install wheel
       - uses: ilammy/msvc-dev-cmd@v1
         id: msvc
         with:
@@ -33,8 +32,9 @@ jobs:
           git submodule update --init --recursive
           python -m venv venv
           ./venv/scripts/activate
-          pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cu113
+          pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
           pip install -r requirements.txt
+          pip install wheel
           python setup.py bdist_wheel
       - uses: actions/upload-artifact@v3
         with:
