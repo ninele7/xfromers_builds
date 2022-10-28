@@ -9,6 +9,7 @@ env:
   NVCC_FLAGS: "-allow-unsupported-compiler"
   TORCH_CUDA_ARCH_LIST: "7.5"
   DISTUTILS_USE_SDK: 1
+  FORCE_CUDA: 1
 
 jobs:
   build:
@@ -29,7 +30,7 @@ jobs:
           cuda: '11.3.1'
       - id: building
         env:
-          CUDA_HOME: $CUDA_PATH
+          CUDA_HOME: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}
         run: |
           echo %CUDA_HOME%
           echo %CUDA_PATH%
