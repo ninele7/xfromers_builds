@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  NVCC_FLAGS: "-allow-unsupported-compiler"
+  TORCH_CUDA_ARCH_LIST: "7.5"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/setup-python@v4
+        id: python
+        with:
+          python-version: '3.10' 
+      - run: pip install wheel
+      - uses: ilammy/msvc-dev-cmd@v1
+        id: msvc
+        with:
+          vsversion: 2022
+      - uses: Jimver/cuda-toolkit@v0.2.8
+        id: cuda-toolkit
+        with:
+          cuda: '11.3.1'
+      - run: |
+          git clone https://github.com/facebookresearch/xformers.git
+          cd xformers
+          git submodule update --init --recursive
+          python -m venv venv
+          ./venv/scripts/activate
+          pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cu113
+          pip install -r requirements.txt
+          python setup.py bdist_wheel
+      - uses: actions/upload-artifact@v3
+        with:
+          name: xformers-wheel
+          path: xformers/dist/*.whl
