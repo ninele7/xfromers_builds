@@ -8,6 +8,7 @@ on:
 env:
   NVCC_FLAGS: "-allow-unsupported-compiler"
   TORCH_CUDA_ARCH_LIST: "7.5"
+  DISTUTILS_USE_SDK: 1
 
 jobs:
   build:
