@@ -28,7 +28,7 @@ jobs:
         id: cuda-toolkit
         with:
           cuda: '11.3.1'
-          sub-packages: '["nvcc", "visual_studio_integration", "cudart", "cusparse"]'
+          sub-packages: '["nvcc", "visual_studio_integration", "cudart", "cusparse", "cusparse_dev"]'
       - id: building
         env:
           CUDA_HOME: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}
