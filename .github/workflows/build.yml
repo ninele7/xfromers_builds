@@ -27,7 +27,12 @@ jobs:
         id: cuda-toolkit
         with:
           cuda: '11.3.1'
-      - run: |
+      - id: building
+        env:
+          CUDA_HOME: $CUDA_PATH
+        run: |
+          echo %CUDA_HOME%
+          echo %CUDA_PATH%
           git clone https://github.com/facebookresearch/xformers.git
           cd xformers
           git submodule update --init --recursive
@@ -37,6 +42,7 @@ jobs:
           pip install -r requirements.txt
           pip install wheel
           python setup.py bdist_wheel
+        shell: cmd
       - uses: actions/upload-artifact@v3
         with:
           name: xformers-wheel
