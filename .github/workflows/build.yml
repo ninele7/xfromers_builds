@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 env:
-  NVCC_FLAGS: "-allow-unsupported-compiler"
-  TORCH_CUDA_ARCH_LIST: "6.0;6.1;7.0;7.5+PTX;8.0;8.6+PTX"
+  NVCC_FLAGS: "-allow-unsupported-compiler --threads 2"
+  TORCH_CUDA_ARCH_LIST: "7.0;7.5+PTX;8.0;8.6+PTX"
   DISTUTILS_USE_SDK: 1
   FORCE_CUDA: 1
 
