@@ -13,12 +13,18 @@ env:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os-version }}
     
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os-version: [ubuntu-latest, windows-latest]
         python-version: ['3.10', '3.8']
+        include:
+          - cuda-verison: '11.3.1'
+            torch-install-command: 'torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113'
+          - coda-version: '11.7.0'
+            torch-install-command: 'torch==1.13.0+cu117 torchvision==0.14.0+cu117 --extra-index-url https://download.pytorch.org/whl/cu117'
 
     steps:
       - uses: actions/setup-python@v4
@@ -32,19 +38,19 @@ jobs:
       - uses: Jimver/cuda-toolkit@v0.2.8
         id: cuda-toolkit
         with:
-          cuda: '11.3.1'
+          cuda: ${{ matrix.cuda-verison }}
       - id: building
         env:
-          CUDA_HOME: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}
+          CUDA_HOME: ${{ steps.cuda-toolkit.outputs.CUDA_PATH }}
         run: |
           git clone https://github.com/facebookresearch/xformers.git
           cd xformers
           git submodule update --init --recursive
-          pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
+          pip install ${{ matrix.torch-install-command }}
           pip install -r requirements.txt
           pip install wheel
           python setup.py bdist_wheel
       - uses: actions/upload-artifact@v3
         with:
-          name: xformers-wheel
+          name: xformers-wheel-${{ matrix.os-version }}-${{ matrix.python-version }}-${{ matrix.cuda-verison }}
           path: xformers/dist/*.whl
