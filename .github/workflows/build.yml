@@ -37,13 +37,7 @@ jobs:
         id: msvc
         with:
           vsversion: 2022
-      - uses: Jimver/cuda-toolkit@v0.2.8
-        id: cuda-toolkit
-        with:
-          cuda: ${{ matrix.cuda-version }}
-      - id: building
-        env:
-          CUDA_HOME: ${{ steps.cuda-toolkit.outputs.CUDA_PATH }}
+      - id: prepare-build
         run: |
           git clone https://github.com/facebookresearch/xformers.git
           cd xformers
@@ -51,6 +45,19 @@ jobs:
           pip install ${{ matrix.torch-install-command }}
           pip install -r requirements.txt
           pip install wheel
+      - id: winmemhack
+        if: runner.os == 'Windows'
+        run: |
+          (Get-Content xformers\setup.py) -replace '"4"', '"1"' | Out-File xformers\setup.py
+      - uses: Jimver/cuda-toolkit@v0.2.8
+        id: cuda-toolkit
+        with:
+          cuda: ${{ matrix.cuda-version }}
+      - id: build
+        env:
+          CUDA_HOME: ${{ steps.cuda-toolkit.outputs.CUDA_PATH }}
+        run: |
+          cd xformers
           python setup.py bdist_wheel
       - uses: actions/upload-artifact@v3
         with:
