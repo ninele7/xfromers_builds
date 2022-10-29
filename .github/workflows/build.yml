@@ -84,7 +84,6 @@ jobs:
       - id: release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "*.whl"
+          artifacts: "*/*.whl"
           tag: ${{ github.run_id }}
-      
-    
+          commit: ${{ github.sha }}
