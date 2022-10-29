@@ -85,5 +85,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "*.whl"
+          tag: ${{ github.run_id }}
       
     
