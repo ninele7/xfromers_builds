@@ -7,19 +7,24 @@ on:
 
 env:
   NVCC_FLAGS: "-allow-unsupported-compiler"
-  TORCH_CUDA_ARCH_LIST: "6.0,6.1,7.0,7.5,8.0,8.6"
+  TORCH_CUDA_ARCH_LIST: "6.0;6.1;7.0;7.5;8.0;8.6"
   DISTUTILS_USE_SDK: 1
   FORCE_CUDA: 1
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.10', '3,8']
 
     steps:
       - uses: actions/setup-python@v4
         id: python
         with:
-          python-version: '3.10' 
+          python-version: ${{ matrix.python-version }}
       - uses: ilammy/msvc-dev-cmd@v1
         id: msvc
         with:
