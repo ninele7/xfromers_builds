@@ -7,7 +7,7 @@ on:
 
 env:
   NVCC_FLAGS: "-allow-unsupported-compiler"
-  TORCH_CUDA_ARCH_LIST: "6.0;6.1;7.0;7.5;8.0;8.6"
+  TORCH_CUDA_ARCH_LIST: "6.0;6.1;7.0;7.5+PTX;8.0;8.6+PTX"
   DISTUTILS_USE_SDK: 1
   FORCE_CUDA: 1
 
@@ -21,9 +21,11 @@ jobs:
         os-version: [ubuntu-latest, windows-latest]
         python-version: ['3.10', '3.8']
         include:
-          - cuda-version: '11.3.1'
+          - python-version: '3.10'
+            cuda-version: '11.3.1'
             torch-install-command: 'torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113'
-          - cuda-version: '11.7.0'
+          - python-version: '3.8'
+            cuda-version: '11.7.0'
             torch-install-command: 'torch==1.13.0+cu117 torchvision==0.14.0+cu117 --extra-index-url https://download.pytorch.org/whl/cu117'
 
     steps:
