@@ -75,3 +75,15 @@ jobs:
         with:
           name: xformers-wheel-${{ matrix.os-version }}-${{ matrix.python-version }}-${{ matrix.cuda-version }}
           path: xformers/dist/*.whl
+  release:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - id: get-artifact
+        uses: actions/download-artifact@v3
+      - id: release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "*.whl"
+      
+    
