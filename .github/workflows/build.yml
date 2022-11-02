@@ -27,6 +27,7 @@ jobs:
             python-version: '3.10'
             cuda-version: '11.7.0'
             torch-install-command: 'torch==1.13.0+cu117 torchvision==0.14.0+cu117 --extra-index-url https://download.pytorch.org/whl/cu117'
+            custom-suffix: '+cu117'
           - os-version: windows-latest
             python-version: '3.10'
             cuda-version: '11.3.1'
@@ -71,6 +72,11 @@ jobs:
         run: |
           cd xformers
           python setup.py bdist_wheel
+      - id: rename
+        if: ${{ matrix.custom-suffix }}
+        run: |
+          cd xformers/dist/
+          rename 'dev0' 'dev0+cu117' *.whl 
       - uses: actions/upload-artifact@v3
         with:
           name: xformers-wheel-${{ matrix.os-version }}-${{ matrix.python-version }}-${{ matrix.cuda-version }}
